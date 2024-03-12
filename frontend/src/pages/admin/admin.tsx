@@ -24,9 +24,9 @@ export default function Admin() {
     return (
         <>
             <Nav />
-            <Content className="content">
-                0000
-            </Content>
+                <Content className="content">
+                    0000
+                </Content>
             <Footers />
         </>
     );
