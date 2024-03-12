@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/NaruebeTh1/K-Base/controller"
-	"github.com/NaruebeTh1/K-Base/entity"
+	"github.com/NaruebeTh1/K-BASE/controller"
+	"github.com/NaruebeTh1/K-BASE/entity"
 	"github.com/gin-gonic/gin"
 )
 
