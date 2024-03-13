@@ -1,6 +1,7 @@
 package main
 
 import (
+
 	"github.com/NaruebeTh1/K-BASE/controller"
 	"github.com/NaruebeTh1/K-BASE/entity"
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,7 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/users", controller.ListUser)
+	router.POST("/knowledge", controller.CreateKnowledge)
 
 	router.Run(":8080")
 }
