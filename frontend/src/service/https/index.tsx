@@ -17,6 +17,21 @@ async function GetUser() {
     return res;
   }
 
+  async function GetKnowledge() {
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+  
+    let res = await fetch(`${apiUrl}/knowledges`, requestOptions)
+      .then((response) => response.json())
+      .then(({ data }) => (data ? data : false));
+  
+    return res;
+  }
+
   async function CreateKnowledge(data: Knowledge) {
     const requestOptions = {
       method: "POST",
@@ -39,7 +54,31 @@ async function GetUser() {
     return res;
   }
 
+  async function DeleteKnowledge(id: Number | undefined) {
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `${localStorage.getItem("token")}`,
+      },
+    };
+  
+    let res = await fetch(`${apiUrl}/knowledgeD/${id}`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          return res.data;
+        } else {
+          return false;
+        }
+      });
+  
+    return res;
+  }
+
 export {
     GetUser,
-    CreateKnowledge
+    GetKnowledge,
+    CreateKnowledge,
+    DeleteKnowledge,
 }

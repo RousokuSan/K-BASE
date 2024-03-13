@@ -15,3 +15,13 @@ func ListUser(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": user})
 }
+
+func ListKnowledge(c *gin.Context) {
+	var knowledge []entity.Knowledge
+
+	if err := entity.DB().Preload("User").Find(&knowledge).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": knowledge})
+}

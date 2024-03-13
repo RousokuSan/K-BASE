@@ -25,7 +25,7 @@ func CreateKnowledge(c *gin.Context) {
 	}
 
 	knowledges := entity.Knowledge{
-		User: 		user,         
+		UserID:     &user.ID,         
 		Title:   	knowledge.Title,   
 	}
 
@@ -36,4 +36,14 @@ func CreateKnowledge(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": knowledges})
+}
+
+// ฟังก์ชันลบรายการ knowledges
+func DeleteKnowledge(c *gin.Context) {
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM knowledges WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "knowledges not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }

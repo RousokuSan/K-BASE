@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import { Link } from 'react-router-dom';
 
-const pages = ['Dashboard', 'Knowledge', 'Rule', 'Admin'];
+const pages = ['Dashboard', 'Knowledge', 'Admin'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 export default function Narbar() {

@@ -14,7 +14,10 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/users", controller.ListUser)
+	router.GET("/knowledges", controller.ListKnowledge) // ดึงข้อมูล knowledge มาแสดง
 	router.POST("/knowledge", controller.CreateKnowledge)
+
+	router.DELETE("/knowledgeD/:id", controller.DeleteKnowledge)
 
 	router.Run(":8080")
 }
