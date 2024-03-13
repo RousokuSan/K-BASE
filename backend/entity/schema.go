@@ -16,6 +16,8 @@ type User struct {
 type Knowledge struct {
 	gorm.Model
 	Title string
+	// State int // เปลี่ยนประเภทข้อมูลเป็น int เพื่อเก็บค่าของ check mark
+	State bool
 
 	Rules []Rule `gorm:"foreignKey:KnowledgeID"`
 
@@ -38,8 +40,8 @@ type Rule struct {
 
 type Case struct {
 	gorm.Model
-	FirstCase 	string
-	SecCase  	string
+	FirstCase string
+	SecCase   string
 
 	Rules []Rule `gorm:"foreignKey:CaseID"`
 
@@ -50,7 +52,7 @@ type Case struct {
 type Result struct {
 	gorm.Model
 	FirstResult string
-	SecResult 	string
+	SecResult   string
 
 	Rules []Rule `gorm:"foreignKey:ResultID"`
 

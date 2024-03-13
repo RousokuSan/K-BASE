@@ -3,6 +3,7 @@ export interface Knowledge {
     Title:      string;
     User?:   UserInterface;
     UserID:     number;
+    State:      number; // เพิ่มฟิลด์ State
 }
 export interface UserInterface {
     ID?:         number;
