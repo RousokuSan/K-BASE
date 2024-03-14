@@ -11,3 +11,4 @@ export interface UserInterface {
     Password:   string;
     Phone:      string;
 }
+

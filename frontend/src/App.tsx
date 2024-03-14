@@ -12,6 +12,7 @@ import Knowledges from "./pages/knowledge";
 import Dashboard from "./pages/dashboard";
 import Account from "./pages/user/account";
 import Profile from "./pages/user/profile";
+import CreateRules from "./pages/rule/createRule";
 
 function App() {
   return (
@@ -26,6 +27,9 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/account" element={<Account />} />
         <Route path="/profile" element={<Profile />} />
+        {/* <Route path="/rule/createRule" element={< CreateRules/>} /> */}
+        {/* <Route path="/rule/createRule/:id" element={<CreateRules />} />\ */}
+        <Route path="/rule/createRule/:id" element={<Knowledges />} />
       </Routes>
     </Router>
   );

@@ -11,22 +11,27 @@ import { Knowledge } from '../../interface';
 import { DeleteOutlined } from "@mui/icons-material";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from "react-router-dom";
+
 
 export default function Knowledges() {
+   
+    const navigate = useNavigate();
+    
     const [Addform] = Form.useForm();
     const [dataKnowledge, setDataKnowledge] = useState<Knowledge[]>([]);
-    const [deleteId, setDeleteId] = useState<Number>();
-    const [modalText, setModalText] = useState<String>();
-    const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [knowledgeId, setKnowledgeId] = useState<number | undefined>(undefined);
+    const [knowledgeTitle, setKnowledgeTitle] = useState(""); // เก็บค่าจาก Title of Knowledge Base
+    const [deleteId, setDeleteId] = useState<number | undefined>();
+    const [deleteModalVisible, setDeleteModalVisible] = useState(false); // เพิ่ม state สำหรับ Modal การลบข้อมูล
+
   
     const onFinish = async (values: Knowledge) => {
         let res = await CreateKnowledge(values);
         if (res.status) {  
-
             toast.success("สร้างรายการ Knowledge สำเร็จ");
-            getKnowledge(); // ดึงข้อมูลมาแสดงทันทีหลังการสร้าง
-
+            getKnowledge();
             Addform.setFieldsValue({
                 'Title': undefined 
             });
@@ -39,7 +44,6 @@ export default function Knowledges() {
         let res = await GetKnowledge();
         if (res) {
             setDataKnowledge(res);
-            console.log(res)
         }
     };
     
@@ -48,33 +52,41 @@ export default function Knowledges() {
     }, []);
 
     const showModal = (val: Knowledge) => {
-        setModalText(
-            `เมิงจะลบจริง ๆ หรอ คิดดี ๆ นะจ๊ะ`
-        );
         setDeleteId(val.ID);
-        setOpen(true);
+        setDeleteModalVisible(true);
     };
 
     const handleOk = async () => {
-        setConfirmLoading(true);
-        let res = await DeleteKnowledge(deleteId);
-        if (res) {
-            toast.success("ลบข้อมูลสำเร็จ");
-            setOpen(false);
-            getKnowledge();
-        } else {    
-            toast.error("เกิดข้อผิดพลาด ! " + res.message);
-            setOpen(false);
+        if (deleteId !== undefined) {
+            let res = await DeleteKnowledge(deleteId);
+            if (res) {
+                toast.success("ลบข้อมูลสำเร็จ");
+                setDeleteModalVisible(false);
+                getKnowledge();
+            } else {    
+                toast.error("เกิดข้อผิดพลาด ! " + res.message);
+                setDeleteModalVisible(false);
+            }
+        } else {
+            toast.error("ไม่พบ ID ที่ต้องการลบ");
+            setDeleteModalVisible(false);
         }
-        setConfirmLoading(false);
     };
     
     const handleCancel = () => {
-        setOpen(false);
+        setDeleteModalVisible(false);
+    };
+
+    const handleAddKnowledge = (record: Knowledge) => {
+        setKnowledgeId(record.ID);
+        setKnowledgeTitle(record.Title);
+        setDeleteId(record.ID); // เก็บค่า ID ของรายการที่ต้องการลบ
+        setModalVisible(true);
     };
 
     
     const columns: ColumnsType<Knowledge> = [
+       
         {
             title: 'State',
             width: '10%',
@@ -104,7 +116,7 @@ export default function Knowledges() {
             render: (record) => (
                 <Space style={{flexWrap: 'wrap', justifyContent: 'center'}}>              
         
-                  <Button className='addbtn'>
+                  <Button className='addbtn' onClick={() => handleAddKnowledge(record)}>  
                       Add Knowledge
                   </Button>
         
@@ -170,31 +182,38 @@ export default function Knowledges() {
                     </Card>
 
                     <Modal
-                        open={open}
-                        onOk={handleOk} 
-                        confirmLoading={confirmLoading}
-                        onCancel={handleCancel}
-                        title={<span style={{ color: '#FF4B4B', fontSize:20 }}> คำเตือน !! </span>}
-                        style={{fontSize: '16px', minWidth: '400px'}}
-                        okText= {<span style={{ color: 'white'}}> ลบข้อมูล </span>}
-                        okButtonProps={{ style: { background: '#0BB6DC', borderColor: '#0BB6DC' } }}
-                        cancelText= {<span style={{ color: 'white'}}> ยกเลิก </span>}
-                        cancelButtonProps={{ style: { background: '#FF4B4B', borderColor: '#FF4B4B' } }}
+                        visible={modalVisible}
+                        onCancel={() => setModalVisible(false)}
+                        footer={null}
                     >
-                        <p>{modalText}</p>
+                        <p>{`Title: ${knowledgeTitle} - ID: ${knowledgeId}`}</p>
                     </Modal>
 
-                    <ToastContainer
-                        position="top-center"
-                        autoClose={2000}
-                        hideProgressBar={false}
-                        newestOnTop={false}
-                        closeOnClick
-                        rtl={false}
-                        pauseOnFocusLoss
-                        draggable
-                        pauseOnHover
-                        theme="light"/> 
+                    <Modal
+                       visible={deleteModalVisible}
+                       onOk={handleOk}
+                       confirmLoading={false}
+                       onCancel={handleCancel}
+                       title="คำเตือน !!"
+                       okText="ลบข้อมูล"
+                       okButtonProps={{ style: { background: '#0BB6DC', borderColor: '#0BB6DC' } }}
+                       cancelText="ยกเลิก"
+                       cancelButtonProps={{ style: { background: '#FF4B4B', borderColor: '#FF4B4B' } }}>
+                      <p>เมิงจะลบจริง ๆ หรือ คิดดี ๆ นะจ๊ะ</p>
+                    </Modal>
+
+
+                <ToastContainer
+                    position="top-center"
+                    autoClose={2000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"/> 
 
                 </Content>
             <Footers/>
