@@ -27,6 +27,8 @@ func CreateKnowledge(c *gin.Context) {
 	knowledges := entity.Knowledge{
 		UserID:     &user.ID,         
 		Title:   	knowledge.Title,   
+		
+		State: false, // กำหนดค่า State เป็น 0 เสมอ
 	}
 
 	// บันทึก

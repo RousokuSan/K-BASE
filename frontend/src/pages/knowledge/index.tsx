@@ -18,13 +18,14 @@ export default function Knowledges() {
     const onFinish = async (values: Knowledge) => {
         let res = await CreateKnowledge(values);
         if (res.status) {  
+            toast.success("สร้างรายการ Knowledge สำเร็จ");
             getKnowledge(); // ดึงข้อมูลมาแสดงทันทีหลังการสร้าง
 
             Addform.setFieldsValue({
                 'Title': undefined // รีเซ็ตแบบฟอร์ม ทันทีเมื่อสร้างเสร็จ
             });
         } else {
-    
+            toast.error("เกิดข้อผิดพลาด ! " + res.message);
         }
     };
 

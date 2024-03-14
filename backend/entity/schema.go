@@ -16,6 +16,7 @@ type User struct {
 type Knowledge struct {
 	gorm.Model
 	Title string
+	State bool
 
 	Rules []Rule `gorm:"foreignKey:KnowledgeID"`
 
