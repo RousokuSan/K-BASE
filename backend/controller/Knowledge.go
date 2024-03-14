@@ -29,8 +29,7 @@ func CreateKnowledge(c *gin.Context) {
 
 		UserID: &user.ID,
 		Title:  knowledge.Title,
-		State: false, // กำหนดค่า State เป็น 0 เสมอ
-// >>>>>>> 885ea03b0fc0360cdac94af944eb723f5cf2a27a
+		State: "0", // กำหนดค่า State เป็น 0 เสมอ
 
 	}
 

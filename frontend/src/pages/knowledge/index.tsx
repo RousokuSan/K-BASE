@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Button, Form, Input, Modal, Space } from 'antd';
+import { Button, Checkbox, Form, Input, Modal, Space } from 'antd';
 import Nav from "../../layout/navbar";
 import Footers from "../../layout/footer";
 import { Content } from "antd/es/layout/layout";
 import '../style/styleBtn.css';
-import { Card, Table, Checkbox } from "antd";
+import { Card, Table } from "antd";
 import type { ColumnsType } from 'antd/es/table';
 import { CreateKnowledge, DeleteKnowledge, GetKnowledge } from '../../service/https';
 import { Knowledge } from '../../interface';
@@ -19,18 +19,14 @@ export default function Knowledges() {
     const [modalText, setModalText] = useState<String>();
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
-    const [checkedStates, setCheckedStates] = useState<{ [key: number]: boolean }>({}); // เปลี่ยนชื่อตัวแปรเป็น checkedStates
-
+  
     const onFinish = async (values: Knowledge) => {
         let res = await CreateKnowledge(values);
         if (res.status) {  
-// HEAD
-            getKnowledge(); 
 
             toast.success("สร้างรายการ Knowledge สำเร็จ");
             getKnowledge(); // ดึงข้อมูลมาแสดงทันทีหลังการสร้าง
 
-// 885ea03b0fc0360cdac94af944eb723f5cf2a27a
             Addform.setFieldsValue({
                 'Title': undefined 
             });
@@ -77,27 +73,15 @@ export default function Knowledges() {
         setOpen(false);
     };
 
-    const handleCheckboxChange = (isChecked: boolean, id: number) => {
-        setCheckedStates(prevState => ({ ...prevState, [id]: isChecked }));
-        let updatedDataKnowledge = dataKnowledge.map(knowledge => {
-            if (knowledge.ID === id) {
-                return { ...knowledge, State: isChecked ? 1 : 0 }; // อัปเดตค่า State ของแถวที่เปลี่ยนแปลง
-            }
-            return knowledge;
-        });
-        setDataKnowledge(updatedDataKnowledge);
-    };
     
     const columns: ColumnsType<Knowledge> = [
         {
             title: 'State',
-            dataIndex : 'State',
-            key: 'State',
             width: '10%',
             align: 'center',
-            render: (_, record) => ( // ใช้ _ เนื่องจากไม่ต้องการใช้ค่านี้ในการแสดงผล
-                <Checkbox checked={checkedStates[record.ID]} onChange={(e) => handleCheckboxChange(e.target.checked, record.ID)} /> // ใช้ ID เป็นคีย์ในการเข้าถึง state ของ checkbox
-            ),
+            render: (record) => (
+                <Checkbox checked={record.State === '1'} />
+            )
         },
         {
             title: 'ID',
