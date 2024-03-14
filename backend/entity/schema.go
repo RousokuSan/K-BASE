@@ -16,7 +16,10 @@ type User struct {
 type Knowledge struct {
 	gorm.Model
 	Title string
+// <<<<<<< HEAD
 	// State int // เปลี่ยนประเภทข้อมูลเป็น int เพื่อเก็บค่าของ check mark
+
+ //>>>>>>> 885ea03b0fc0360cdac94af944eb723f5cf2a27a
 	State bool
 
 	Rules []Rule `gorm:"foreignKey:KnowledgeID"`

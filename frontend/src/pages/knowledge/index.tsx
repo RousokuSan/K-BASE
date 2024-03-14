@@ -24,12 +24,18 @@ export default function Knowledges() {
     const onFinish = async (values: Knowledge) => {
         let res = await CreateKnowledge(values);
         if (res.status) {  
+// HEAD
             getKnowledge(); 
+
+            toast.success("สร้างรายการ Knowledge สำเร็จ");
+            getKnowledge(); // ดึงข้อมูลมาแสดงทันทีหลังการสร้าง
+
+// 885ea03b0fc0360cdac94af944eb723f5cf2a27a
             Addform.setFieldsValue({
                 'Title': undefined 
             });
         } else {
-    
+            toast.error("เกิดข้อผิดพลาด ! " + res.message);
         }
     };
 

@@ -26,10 +26,12 @@ func CreateKnowledge(c *gin.Context) {
 
 	// สร้าง Knowledge จากข้อมูลที่รับเข้ามา
 	knowledges := entity.Knowledge{
+
 		UserID: &user.ID,
 		Title:  knowledge.Title,
-		// State:  knowledge.State, // ใช้ค่า State จาก request
-		State:  true, // ให้ state เป็น true
+		State: false, // กำหนดค่า State เป็น 0 เสมอ
+// >>>>>>> 885ea03b0fc0360cdac94af944eb723f5cf2a27a
+
 	}
 
 	// บันทึกข้อมูล Knowledge ลงในฐานข้อมูล
