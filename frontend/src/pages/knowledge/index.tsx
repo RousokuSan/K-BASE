@@ -187,7 +187,7 @@ export default function Knowledges() {
                         
                         {currentStep === 0 && (
                         <Form style={{ maxHeight: '550px', overflowY: 'auto', marginTop: '20px',maxWidth: '500px' }}>
-                             <div style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: 'red' }}>YOUR RULE</div>
+                             <div style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: 'red' }}>YOUR FACT</div>
                             <Form.Item style={{ textAlign: 'center', marginTop: '20px' }}label="Fact name1" name="fact1">
                                 <Input />
                             </Form.Item>
@@ -223,7 +223,7 @@ export default function Knowledges() {
                     )}
                         {currentStep === 1 && (
                               <Form style={{ maxHeight: '550px', overflowY: 'auto', marginTop: '20px',maxWidth: '500px' }}>
-                              <div style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: 'red' }}>YOUR FACT</div>
+                              <div style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: 'red' }}>YOUR RULE</div>
                              <Form.Item style={{ textAlign: 'center', marginTop: '20px' }}label="Fact name1" name="fact1">
                                  <Input />
                              </Form.Item>

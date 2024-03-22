@@ -14,10 +14,17 @@ func main() {
 	router.Use(CORSMiddleware())
 
 	router.GET("/users", controller.ListUser)
+	// router.GET("/rules", controller.ListRule) // เพิ่มเส้นทางสำหรับแสดงข้อมูล Rule ในรูปแบบตาราง
 	router.GET("/knowledges", controller.ListKnowledge) // ดึงข้อมูล knowledge มาแสดง
 	router.POST("/knowledge", controller.CreateKnowledge)
 
 	router.DELETE("/knowledgeD/:id", controller.DeleteKnowledge)
+
+	  // สร้าง Rule ใหม่
+	  router.POST("/rules", controller.CreateRule)
+
+	  // แสดงรายการ Rule ทั้งหมด
+	  router.GET("/rules", controller.ListRules)
 
 	router.Run(":8080")
 }
