@@ -2,7 +2,6 @@ import { Box, Container, Grid, Typography } from "@mui/material";
 import Link from "@mui/material/Link";
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 
-
 export default function Footers() {
 
     return (

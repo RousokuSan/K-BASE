@@ -1,40 +1,64 @@
 package controller
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/NaruebeTh1/K-BASE/entity"
-    "github.com/gin-gonic/gin"
+	"github.com/NaruebeTh1/K-BASE/entity"
+	"github.com/gin-gonic/gin"
 )
 
-// CreateRule สร้าง Rule ใหม่
+// POST
 func CreateRule(c *gin.Context) {
-    var rule entity.Rule
+	var rule entity.Rule
+	var knowledge entity.Knowledge
+	var operator entity.Operator
 
-    // bind ข้อมูลเข้าตัวแปร Rule
-    if err := c.ShouldBindJSON(&rule); err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	// bind เข้าตัวแปร rule
+	if err := c.ShouldBindJSON(&rule); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-    // บันทึกข้อมูล Rule ลงในฐานข้อมูล
-    if err := entity.DB().Create(&rule).Error; err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
+	if tx := entity.DB().Where("id = ?", rule.KnowledgeID).First(&knowledge); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "knowledge not found"})
+		return
+	}
+	if tx := entity.DB().Where("id = ?", rule.OperatorID).First(&operator); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "operator not found"})
+		return
+	}
 
-    c.JSON(http.StatusOK, gin.H{"data": rule})
+	myrule := entity.Rule{
+		KnowledgeID: rule.KnowledgeID,
+		OperatorID: rule.OperatorID,
+
+		Node1: rule.Node1,
+		Node2: rule.Node2,
+		Result1: rule.Result1,
+		Result2: rule.Result2,
+	}
+
+	if err := entity.DB().Model(&knowledge).Update("State", "1").Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"err":err.Error()})
+		return
+	}
+
+	if err := entity.DB().Create(&myrule).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "rule already exists"})
+		return
+	} 
+	
+	c.JSON(http.StatusOK, gin.H{"data": myrule})	
 }
 
-// ListRules แสดงรายการ Rule ทั้งหมด
-func ListRules(c *gin.Context) {
-    var rules []entity.Rule
-
-    // ค้นหาและดึงข้อมูล Rule ทั้งหมดจากฐานข้อมูล
-    if err := entity.DB().Find(&rules).Error; err != nil {
-        c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-        return
-    }
-
-    c.JSON(http.StatusOK, gin.H{"data": rules})
+// ฟังก์ชันลบรายการ rule
+func DeleteRule(c *gin.Context) {
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM rules WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "rules not found"})
+		return
+	}
+	// ส่งคำตอบกลับเมื่อสร้างข้อมูลสำเร็จ
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
+

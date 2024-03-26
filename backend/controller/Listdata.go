@@ -25,3 +25,24 @@ func ListKnowledge(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": knowledge})
 }
+
+// get rule data by knowledge id
+func ListRule(c *gin.Context) {
+	var rule []entity.Rule
+	KnowledgeId := c.Param("id")
+	if err := entity.DB().Preload("Knowledge").Preload("Operator").Where("knowledge_id", KnowledgeId).Find(&rule).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": rule})
+}
+
+func GetOperator(c *gin.Context) {
+	var operator []entity.Operator
+	if err := entity.DB().Raw("SELECT * FROM operators").Scan(&operator).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": operator})
+}

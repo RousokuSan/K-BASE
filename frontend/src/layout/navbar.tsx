@@ -14,7 +14,7 @@ import MenuItem from '@mui/material/MenuItem';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import { Link } from 'react-router-dom';
 
-const pages = ['Rule' , 'Fact', 'Knowledge'];
+const pages = ['RULE','KNOWLEDGE', 'FACT'];
 const settings = ['Profile', 'Account', 'Logout'];
 
 export default function Narbar() {
@@ -106,17 +106,18 @@ export default function Narbar() {
           </Box>
  
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'center', marginLeft: 'auto' }}>
-              {pages.map((page) => (
+          {pages.map((page) => (
                   <Button
                       key={page}
                       onClick={handleCloseNavMenu}
                       component={Link} 
-                      to={`/${page.toLowerCase()}`} // กำหนด path 
+                      to={page === 'FACT' ? '/createFact' : page ==='RULE' ? '/createRuleMain' : `/${page.toLowerCase()}`} 
                       sx={{ my: 2, color: 'white', display: 'block'}}
                   >
                       {page}
                   </Button>
               ))}
+
           </Box>
 
 
