@@ -19,6 +19,7 @@ func CreateRule(c *gin.Context) {
 		return
 	}
 
+	//ถ้ามีการอ้าง ForenKey จะต้องมีบรรทัดพวกนี้ด้วย แต่ในห้า Fact ไม่มี เลยไม่ต้องมี
 	if tx := entity.DB().Where("id = ?", rule.KnowledgeID).First(&knowledge); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "knowledge not found"})
 		return
@@ -27,6 +28,7 @@ func CreateRule(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "operator not found"})
 		return
 	}
+/////////////////////////////////////////
 
 	myrule := entity.Rule{
 		KnowledgeID: rule.KnowledgeID,
@@ -38,6 +40,7 @@ func CreateRule(c *gin.Context) {
 		Result2: rule.Result2,
 	}
 
+	//อยากให้ state เริ่มที่ 1
 	if err := entity.DB().Model(&knowledge).Update("State", "1").Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"err":err.Error()})
 		return

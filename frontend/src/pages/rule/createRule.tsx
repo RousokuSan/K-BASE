@@ -3,7 +3,7 @@ import { Content } from "antd/es/layout/layout";
 import Footers from "../../layout/footer";
 import Nav from "../../layout/navbar";
 import { Button, Card, Form, Input, Layout, Modal, Select, Space, message } from "antd";
-import { Fact, Knowledge, OperatorInterface, RuleInterface } from "../../interface";
+import { FactInterface, Knowledge, OperatorInterface, RuleInterface } from "../../interface";
 import { DeleteOutlined} from "@mui/icons-material";
 import Table, { ColumnsType } from "antd/es/table";
 import { ToastContainer, toast } from "react-toastify";
@@ -70,9 +70,9 @@ export default function CreateRulesPage() {
         }
     };
 
-    const [searchResults, setSearchResults] = useState<Fact[]>([]);
+    const [searchResults, setSearchResults] = useState<FactInterface[]>([]);
     const [searchText] = useState<string>('');
-    const [fact] = useState<Partial<Fact & { Record?: string }>>({});
+    const [fact] = useState<Partial<FactInterface & { Record?: string }>>({});
     const handleSearchFact = async (value: string) => {
         try {
           const results = await SearchFact(value);
@@ -210,7 +210,7 @@ export default function CreateRulesPage() {
                                     filterOption={false}                                
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: Fact) => (
+                                        searchResults.map((item: FactInterface) => (
                                         <Option key={item.ID} value={item.FactName} >
                                             {item.FactName}
                                         </Option>
@@ -238,7 +238,7 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: Fact) => (
+                                        searchResults.map((item: FactInterface) => (
                                         <Option key={item.ID} value={item.FactName}>
                                             {item.FactName}
                                         </Option>
@@ -258,7 +258,7 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: Fact) => (
+                                        searchResults.map((item: FactInterface) => (
                                         <Option key={item.ID} value={item.FactName}>
                                             {item.FactName}
                                         </Option>
@@ -276,7 +276,7 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: Fact) => (
+                                        searchResults.map((item: FactInterface) => (
                                         <Option key={item.ID} value={item.FactName}>
                                             {item.FactName}
                                         </Option>

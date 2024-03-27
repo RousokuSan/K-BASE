@@ -25,6 +25,12 @@ func main() {
 	router.DELETE("/deleteRule/:id", controller.DeleteRule)
 	router.GET("/Operator", controller.GetOperator)
 
+	//fact
+	router.POST("/facts1", controller.CreateFact) ///"facts1" เป็น path เฉยๆเอาไว้อ้างอิง
+	router.GET("/facts2", controller.GetFact)
+	router.DELETE("facts3", controller.DeleteFact)
+	
+
 	// router.GET("/fact/search/:name", controller.SearchFactByName)
 
 	router.Run(":8080")

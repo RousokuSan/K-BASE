@@ -46,3 +46,13 @@ func GetOperator(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"data": operator})
 }
+
+//เขียนคล้าย GetOperator เพราะในหน้า Fact มันไม่มีforen key เหมือน หน้า ListRule
+func GetFact(c *gin.Context) {
+	var fact []entity.Fact
+	if err := entity.DB().Raw("SELECT * FROM facts").Scan(&fact).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": fact})
+}

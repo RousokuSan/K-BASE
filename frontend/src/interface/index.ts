@@ -30,7 +30,7 @@ export interface OperatorInterface {
     OperatorName:   string
 }
 
-export interface Fact {
+export interface FactInterface {
     ID:             number;
     FactName:   string
 }
