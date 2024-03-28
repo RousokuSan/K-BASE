@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Content } from "antd/es/layout/layout";
 import Footers from "../../layout/footer";
 import Nav from "../../layout/navbar";
-import { Button, Card, Form, Input, Layout, Modal, Select, Space, message } from "antd";
-import { FactInterface, Knowledge, OperatorInterface, RuleInterface } from "../../interface";
-import { DeleteOutlined} from "@mui/icons-material";
+import { Button, Card, Form, Layout, Modal, Select, Space, message } from "antd";
+import { Fact, Knowledge, OperatorInterface, RuleInterface } from "../../interface";
+import { DeleteOutlined, EditSharp} from "@mui/icons-material";
 import Table, { ColumnsType } from "antd/es/table";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -70,14 +70,16 @@ export default function CreateRulesPage() {
         }
     };
 
-    const [searchResults, setSearchResults] = useState<FactInterface[]>([]);
+    const [searchResults, setSearchResults] = useState<Fact[]>([]);
     const [searchText] = useState<string>('');
-    const [fact] = useState<Partial<FactInterface & { Record?: string }>>({});
+    const [fact] = useState<Partial<Fact & { Record?: string }>>({});
     const handleSearchFact = async (value: string) => {
         try {
           const results = await SearchFact(value);
           setSearchResults(results || []);
         } catch (error) {
+            // console.error("Error searching for facts:", error);
+        
         }
       };
     useEffect(() => {
@@ -132,8 +134,9 @@ export default function CreateRulesPage() {
             title: 'Node 1',
             dataIndex: 'Node1',
             key: 'Node1',
-            width: '18%',
+            width: '20%',
             align: 'center',
+            render: (item) => `${item.Node1.FactName} (${item.Node1.Description})`
         },
         {
             title: 'Operator',
@@ -147,35 +150,42 @@ export default function CreateRulesPage() {
             title: 'Node 2',
             dataIndex: 'Node2',
             key: 'Node2',
-            width: '18%',
+            width: '20%',
             align: 'center',
+            render: (item) => `${item.Node2.FactName} (${item.Node2.Description})`
         },
         {
             title: 'Result 1',
             dataIndex: 'Result1',
             key: 'Result1',
-            width: '18%',
+            width: '20%',
             align: 'center',
+            render: (item) => `${item.Result1.FactName} (${item.Result1.Description})`
         },
         {
             title: 'Result 2',
             dataIndex: 'Result2',
             key: 'Result2',
-            width: '18%',
+            width: '20%',
             align: 'center',
+            render: (item) => `${item.Result2.FactName} (${item.Result2.Description})`
         },
         {
             title: 'Data Management',
             align: 'center',
             render: (record) => (
-                <Space style={{flexWrap: 'wrap', justifyContent: 'center'}}>                 
-                  <Button onClick={() => showModal(record)} className='deleteicon'>
-                    <DeleteOutlined />
-                  </Button>
+                <Space style={{flexWrap: 'wrap', justifyContent: 'center'}}>     
+                    <Button className='deleteicon'>
+                        <EditSharp />
+                    </Button>            
+                    <Button onClick={() => showModal(record)} className='deleteicon'>
+                        <DeleteOutlined />
+                    </Button>
                 </Space>      
-              ),
+            ),
         },
     ];
+    
 
 
     return (
@@ -201,23 +211,24 @@ export default function CreateRulesPage() {
                         style={{ display: 'flex', flexDirection: 'column' }} 
                         >
                         <div style={{ display: 'flex', justifyContent:'center'}}>
-                            <Form.Item name="Node1" label="node 1" style={{ flexBasis: '20%', marginRight: '10px' }}>
-                                <Select
-                                    placeholder="Search"
-                                    value={fact.Record || undefined}
-                                    showSearch
-                                    onSearch={handleSearchFact}
-                                    filterOption={false}                                
-                                    >
-                                    {searchResults.length > 0 ? (
-                                        searchResults.map((item: FactInterface) => (
-                                        <Option key={item.ID} value={item.FactName} >
-                                            {item.FactName}
-                                        </Option>
-                                        ))
-                                    ) : (<Option> </Option>)}
-                                </Select>
-                            </Form.Item>
+                        <Form.Item name="Node1" label="node 1" style={{ flexBasis: '20%', marginRight: '10px' }}>
+    <Select
+        placeholder="Search"
+        value={searchText}
+        showSearch
+        onSearch={handleSearchFact}
+        filterOption={false}                                
+    >
+        {searchResults.length > 0 ? (
+            searchResults.map((item: Fact) => (
+            <Option key={item.ID} value={item.FactName} >
+                {`${item.FactName} (${item.Description})`}
+            </Option>
+            ))
+        ) : (<Option> </Option>)}
+    </Select>
+</Form.Item>
+
 
                             <Form.Item name="OperatorID" label="operator" style={{ flexBasis: '10%', marginRight: '10px' }}>
                                 <Select placeholder="Select operator" >
@@ -238,9 +249,9 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: FactInterface) => (
+                                        searchResults.map((item: Fact) => (
                                         <Option key={item.ID} value={item.FactName}>
-                                            {item.FactName}
+                                            {`${item.FactName} (${item.Description})`}
                                         </Option>
                                         ))
                                     ) : (<Option> </Option>)}
@@ -258,9 +269,9 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: FactInterface) => (
+                                        searchResults.map((item: Fact) => (
                                         <Option key={item.ID} value={item.FactName}>
-                                            {item.FactName}
+                                            {`${item.FactName} (${item.Description})`}
                                         </Option>
                                         ))
                                     ) : (<Option> </Option>)}
@@ -276,9 +287,9 @@ export default function CreateRulesPage() {
                                     filterOption={false}
                                     >
                                     {searchResults.length > 0 ? (
-                                        searchResults.map((item: FactInterface) => (
+                                        searchResults.map((item: Fact) => (
                                         <Option key={item.ID} value={item.FactName}>
-                                            {item.FactName}
+                                            {`${item.FactName} (${item.Description})`}
                                         </Option>
                                         ))
                                     ) : (<Option> </Option>)}
@@ -307,7 +318,8 @@ export default function CreateRulesPage() {
                     <Table
                         dataSource={dataRule} 
                         columns={columns} 
-                        pagination={{pageSize:8}}/>
+                        size="middle"
+                        pagination={{pageSize:5}}/>
                 </Card>
 
                 <Modal

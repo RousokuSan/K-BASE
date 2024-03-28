@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+
 	"github.com/NaruebeTh1/K-BASE/entity"
 	"github.com/gin-gonic/gin"
 )
@@ -46,7 +47,6 @@ func CreateKnowledge(c *gin.Context) {
 func DeleteKnowledge(c *gin.Context) {
 	id := c.Param("id")
 	if tx := entity.DB().Exec("DELETE FROM knowledges WHERE id = ?", id); tx.RowsAffected == 0 {
-		// if tx := entity.DB().Exec("DELETE FROM knowledges WHERE id = ? AND state = 1", id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "knowledges not found"})
 		return
 	}

@@ -49,6 +49,6 @@ type Operator struct {
 
 type Fact struct {
 	gorm.Model
-	Node string `gorm:"uniqueIndex"`
-	Description string 
+	FactName string `gorm:"unique" valid:"required~Please fill in information"`
+	Description string
 }

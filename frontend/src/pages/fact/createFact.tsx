@@ -1,121 +1,190 @@
 import React, { useState, useEffect } from "react";
-import { Content } from "antd/es/layout/layout";
+import { Button, Card, Form, Input, Modal, Space } from "antd";
 import Footers from "../../layout/footer";
 import Nav from "../../layout/navbar";
-import { Button, Card, Form, Input, Layout, Modal, Select, Space, message } from "antd";
-import { DeleteOutlined } from "@mui/icons-material";
+import { Content } from "antd/es/layout/layout";
 import Table, { ColumnsType } from "antd/es/table";
 import { ToastContainer, toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import { useParams } from "react-router-dom";
-import { CreateFact, GetFact, SearchFact } from "../../service/https";
-// import { Fact } from "../../interface";
-import { get } from "http";
-import { FactInterface } from "../../interface";
+import { DeleteOutlined } from "@mui/icons-material";
+import { Fact } from "../../interface";
+import { CreateFactList, DeleteFact, GetFact } from "../../service/https";
 
-export default function CreateFactPage() {
-    const [factData, setFactData] = useState<FactInterface[]>([]);
+export default function CreateFact() {
+    const [dataFact, setDataFact] = useState<Fact[]>([]);
     const [Addform] = Form.useForm();
-    const [searchResults, setSearchResults] = useState<FactInterface[]>([]);
-    const [searchText, setSearchText] = useState<string>('');
-    const [, contextHolder] = message.useMessage();
-    const { Option } = Select;
-    let { id } = useParams();
 
-    const onFinish = async (values: FactInterface) => {
+    const onFinish = async (values: Fact) => {
         try {
-        //   values.KnowledgeID = Number(id);  //ไม่ได้ใช้เพราะไม่มี foren key  
-          const res = await CreateFact(values);
-      
+          let res = await CreateFactList(values);
+        
           if (res.status) {
-            GetFact();  //เรียกฟังก์ชั่น getfact จาก Service มาใช้
+            getFact();
             Addform.resetFields();
             toast.success("บันทึกข้อมูลสำเร็จ");
           } else {
             toast.error(res.message);
+            console.log('Error' + res.message)
           }
         } catch (error) {
           toast.error("เกิดข้อผิดพลาด ! " + error);
         }
-      };
+    };
 
-    const handleSearchFact = async (value: string) => {
-        setSearchText(value);
+    const getFact = async () => {
+        try {
+          let res = await GetFact();
+          if (res) {
+            setDataFact(res);
+          }
+        } catch (error) {
+        }
     };
 
     useEffect(() => {
-        if (searchText.trim() !== '') {
-            handleSearchFact(searchText.trim());
-        } else {
-            setSearchResults([]);
+        getFact();
+    }, []);
+
+    const columns: ColumnsType<Fact> = [
+        {
+            title: 'ID',
+            dataIndex: 'ID',
+            key: 'ID',
+            width: '10%',
+            align: 'center',
+        },
+        {
+            title: 'Fact Name',
+            dataIndex: 'FactName',
+            key: 'FactName',
+            align: 'center',
+        },
+        {
+            title: 'Description',
+            dataIndex: 'Description',
+            key: 'Description',
+            align: 'center',
+
+            //เอาไว้แสดงค่า Node(Description)
+            // render: (text, record) => (
+            //     <span>{record.FactName} ({record.Description})</span>
+            // ),
+        },
+        {
+            title: 'Data Management',
+            align: 'center',
+            width: '15%',
+            render: (record) => (
+                <Space style={{flexWrap: 'wrap', justifyContent: 'center'}}>     
+                    <Button onClick={() => showModal(record)} className='deleteicon'>
+                        <DeleteOutlined />
+                    </Button>
+                </Space>      
+              ),
+        },
+    ];
+
+    const showModal = (val: Fact) => {
+        setModalText(
+            `เมิงจะลบจริง ๆ หรอ คิดดี ๆ นะจ๊ะ`
+        );
+        setDeleteId(val.ID);
+        setOpen(true);
+    };
+
+    const handleOk = async () => {
+        setConfirmLoading(true);
+        let res = await DeleteFact(deleteId);
+        if (res) {
+            toast.success("ลบข้อมูลสำเร็จ");
+            setOpen(false);
+            getFact();
+        } else {    
+            toast.error("เกิดข้อผิดพลาด ! " + res.message);
+            setOpen(false);
         }
-    }, [searchText]);
+        setConfirmLoading(false);
+    };
+    
+    const handleCancel = () => {
+        setOpen(false);
+    };
+
+    const [deleteId, setDeleteId] = useState<Number>();
+    const [,setModalText] = useState<String>();
+    const [open, setOpen] = useState(false);
+    const [confirmLoading, setConfirmLoading] = useState(false);
 
     return (
         <>
-            <Nav />
+        <Nav/>
             <Content className="content">
-                <Card>
-                    {contextHolder}
-                    <Layout style={{ padding: '10px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '20px', textAlign: 'center' }}>CREATE FACT</div>
-                    </Layout>
-                    <Form
+                <Card 
+                    className="CardCreate" 
+                    title="CREATE FACT"
+                    style={{marginTop:'10px', textAlign:'center'}} >
+                    
+                    <Form 
+                        style={{ display: 'flex', justifyContent: 'center' }} 
                         form={Addform}
-                        onFinish={onFinish}
-                        autoComplete="off"
-                        style={{ display: 'flex', flexDirection: 'column' }}
-                    >
-                        {[...Array(3)].map((_, index) => (
-                            <div key={index} style={{ display: 'flex', marginBottom: '10px' }}>
-                                <Form.Item
-                                    name={`node${index + 1}`}
-                                    label={`Node ${index + 1}`}
-                                    rules={[{ required: true, message: 'Please input Node!' }]}
-                                    style={{ flex: 1, marginRight: '10px !important' }}
-                                >
-                                    <Input />
-                                </Form.Item>
-                                <Form.Item
-                                    name={`description${index + 1}`}
-                                    label={`Description ${index + 1}`}
-                                    style={{ flex: 1 }}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </div>
-                        ))}
-                        <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Button type="primary" htmlType="submit">
-                                Submit
+                        onFinish={onFinish} 
+                        autoComplete="off">  
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems:'center', marginRight:10 }}>
+                            <Form.Item name="FactName" label="FACT" >
+                                <Input/>
+                            </Form.Item>  
+                        </div>
+
+                        <div style={{ display: 'flex', justifyContent: 'center', alignItems:'center', marginRight:10 }}>
+                            <Form.Item name="Description" label="Description" >
+                                <Input/>
+                            </Form.Item>  
+                        </div>                     
+                         
+                        <div style={{display: 'flex', justifyContent: 'center'}}>
+                            <Button
+                                type='primary'
+                                htmlType="submit">
+                                Create FACT
                             </Button>
                         </div>
                     </Form>
                 </Card>
-                <Card className="" style={{ marginTop: '10px', textAlign: 'center' }} title="FACT LIST">
-                    <Table dataSource={factData} pagination={{ pageSize: 8 }}>
-                        <Table.Column title="Node 1" dataIndex="node1" key="node1" />
-                        <Table.Column title="Node 2" dataIndex="node2" key="node2" />
-                        <Table.Column title="Node 3" dataIndex="node3" key="node3" />
-                        <Table.Column title="Description 1" dataIndex="description1" key="description1" />
-                        <Table.Column title="Description 2" dataIndex="description2" key="description2" />
-                        <Table.Column title="Description 3" dataIndex="description3" key="description3" />
-                    </Table>
+                <Card 
+                    title="LIST OF FACTS TABLE"
+                    style={{marginTop:'10px', textAlign:'center'}}>
+                    <Table
+                        dataSource={dataFact} 
+                        columns={columns} 
+                        size="middle"
+                        pagination={{pageSize:5}}/>
                 </Card>
-                <ToastContainer
-                    position="top-center"
-                    autoClose={2000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                />
             </Content>
-            <Footers />
+            <Modal
+                open={open}
+                onOk={handleOk} 
+                confirmLoading={confirmLoading}
+                onCancel={handleCancel}
+                title={<span style={{ color: '#FF4B4B', fontSize:20 }}> คำเตือน !! </span>}
+                style={{fontSize: '16px', minWidth: '400px'}}
+                okText= {<span style={{ color: 'white'}}> ลบข้อมูล </span>}
+                okButtonProps={{ style: { background: '#0BB6DC', borderColor: '#0BB6DC' } }}
+                cancelText= {<span style={{ color: 'white'}}> ยกเลิก </span>}
+                cancelButtonProps={{ style: { background: '#FF4B4B', borderColor: '#FF4B4B' } }}>
+            </Modal>
+            <ToastContainer
+                position="top-center"
+                autoClose={2000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"/>
+        <Footers/>
         </>
-    );
+    );    
 }

@@ -1,4 +1,5 @@
 export interface Knowledge {
+
     ID?:      number;
     Title:   string;
     User?:   UserInterface;
@@ -27,10 +28,11 @@ export interface RuleInterface {
 
 export interface OperatorInterface {
     ID:             number;
-    OperatorName:   string
+    OperatorName:   string;
 }
 
-export interface FactInterface {
-    ID:             number;
-    FactName:   string
+export interface Fact {
+    ID:          number;
+    FactName:        string;
+    Description: string;
 }

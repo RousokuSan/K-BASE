@@ -1,4 +1,4 @@
-import { FactInterface, Knowledge, RuleInterface } from "../../interface";
+import { Fact, Knowledge, RuleInterface } from "../../interface";
 
 const apiUrl = "http://localhost:8080";
 
@@ -203,8 +203,6 @@ async function GetUser() {
       throw new Error("not found this fact");
     }
   }
-
-
   async function GetFact() {
     const requestOptions = {
       method: "GET",
@@ -213,7 +211,7 @@ async function GetUser() {
       },
     };
   
-    let res = await fetch(`${apiUrl}/fact2`, requestOptions)
+    let res = await fetch(`${apiUrl}/fact`, requestOptions)
       .then((response) => response.json())
       .then(({ data }) => (data ? data : false));
   
@@ -228,7 +226,7 @@ async function GetUser() {
       },
     };
   
-    let res = await fetch(`${apiUrl}/fact3/${id}`, requestOptions)
+    let res = await fetch(`${apiUrl}/delfact/${id}`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         if (res.data) {
@@ -241,7 +239,7 @@ async function GetUser() {
     return res;
   }
 
-  async function CreateFact(data: FactInterface) {
+  async function CreateFactList(data: Fact) {
     const requestOptions = {
       method: "POST",
       headers: {
@@ -250,7 +248,7 @@ async function GetUser() {
       body: JSON.stringify(data),
     };
   
-    let res = await fetch(`${apiUrl}/fact1`, requestOptions)
+    let res = await fetch(`${apiUrl}/facts`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         if (res.data) {
@@ -275,8 +273,7 @@ export {
     DeleteRule,
     GetKnowledgeByID,
     SearchFact,
-
     GetFact,
-    CreateFact,
+    CreateFactList,
     DeleteFact,
 }

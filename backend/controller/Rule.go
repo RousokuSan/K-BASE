@@ -19,7 +19,7 @@ func CreateRule(c *gin.Context) {
 		return
 	}
 
-	//ถ้ามีการอ้าง ForenKey จะต้องมีบรรทัดพวกนี้ด้วย แต่ในห้า Fact ไม่มี เลยไม่ต้องมี
+	//ถ้ามีการอ้าง ForenKey จะต้องมีบรรทัดพวกนี้ด้วย แต่ใน Fact ไม่มี เลยไม่ต้องมี
 	if tx := entity.DB().Where("id = ?", rule.KnowledgeID).First(&knowledge); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "knowledge not found"})
 		return
